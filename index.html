@@ -559,8 +559,9 @@
         <div class="badge">Rutina personalizada</div>
         <h1>Plan de Entrenamiento Casa / Gimnasio</h1>
         <p class="subtitle">
-            Rellena tu perfil una vez (se guarda). Te doy Día A / B / C con progresión,
-            descanso activo y alertas de sobrecarga. Marca cada ejercicio como ✅ Hecho.
+            Se guarda tu perfil. Te doy Día A / B / C (y D si entrenas mucho),
+            con calentamiento al inicio, mínimo 5 ejercicios por día
+            y estiramientos recomendados al final. Marca cada ejercicio como ✅ Hecho.
         </p>
     </header>
 
@@ -826,18 +827,19 @@
                 ⚠ Cuidado especial por tu lesión/condición. Evita dolor agudo, prioriza técnica lenta.
             </div>
             <div class="note-box warning-box" id="sobrecargaWarning" style="display:none;">
-                Recomendación de recuperación activa: vienes repitiendo pierna pesada muy seguido. Hoy baja la intensidad y enfócate en movilidad / core.
+                Recomendación de recuperación activa: vienes repitiendo pierna pesada muy seguido.
+                Hoy baja la intensidad y enfócate en movilidad / core.
             </div>
             <div class="note-box" id="warmupBox" style="display:none;"></div>
         </div>
 
-        <div id="routineBlocks">
-            <!-- bloques de ejercicios se rellenan con JS -->
-        </div>
+        <div id="routineBlocks"></div>
+
+        <div class="note-box" id="stretchBox" style="display:none;"></div>
 
         <div class="note-box" id="extraNotas">
-            Respira entre series (60-90s fuerza / 30-45s cardio). Calienta 5 min (cuello,
-            hombros, cadera, rodillas). Termina con estiramientos suaves y respiración profunda.
+            Respira entre series (60-90s fuerza / 30-45s cardio). Termina con estiramientos
+            suaves y respiración profunda.
         </div>
     </section>
 
@@ -917,7 +919,6 @@ function saveHistory(arr){
 
 /* ==============================
    BASE DE EJERCICIOS
-   foco nos ayuda a armar bloques
 ================================= */
 const EXERCISES = [
     {
@@ -1039,6 +1040,41 @@ const EXERCISES = [
     }
 ];
 
+/* Movimientos de calentamiento dinámico (previo a la rutina) */
+function buildWarmupMoves(lesiones){
+    const low = (lesiones||"").toLowerCase();
+    const moves = [];
+
+    // básicos siempre
+    moves.push("Rotación suave de cuello, hombros y cadera (1-2 min)");
+    moves.push("Balanceo de piernas adelante/atrás y apertura de cadera (1 min por lado)");
+
+    if(low.includes("rodilla")){
+        moves.push("Sentadilla parcial lenta apoyándote en una silla (10 repeticiones por lado de apoyo)");
+        moves.push("Flexión/extensión de rodilla sentado para lubricar la articulación (15 repeticiones)");
+    }
+    if(low.includes("lumbar")){
+        moves.push("Gato-vaca en el suelo (cat-cow) para calentar zona lumbar (8-10 repeticiones)");
+        moves.push("Inclinaciones pélvicas tumbado boca arriba, lentas (10-12 repeticiones)");
+    }
+
+    // cardio corto suave para subir temperatura
+    moves.push("Marcha o trote suave en el lugar / jumping jacks ligeros (30-45 seg)");
+
+    return moves;
+}
+
+/* Estiramientos recomendados post-rutina */
+function buildStretchList(){
+    return [
+        "Cuádriceps de pie: talón al glúteo, 20-30s por pierna.",
+        "Isquios sentado: inclínate adelante con espalda larga, 20-30s.",
+        "Pecho y hombros: manos detrás de la espalda, abre el pecho 20-30s.",
+        "Espalda baja: postura del niño (child's pose) respirando profundo 30s.",
+        "Respiración diafragmática lenta (4 seg inhalar / 6 seg exhalar) x 1-2 minutos."
+    ];
+}
+
 /* ==============================
    LOGICA SERIES / PROGRESION
 ================================= */
@@ -1058,10 +1094,9 @@ function getSetsReps(nivel, objetivo, tipoEjercicio, fatiga, duracion, weekLevel
         hold = "45-60 seg";
     }
 
-    // progresión semanal (weekLevel sube con el tiempo)
-    // cada semana sumamos +1 serie en fuerza, pero respetando fatiga
+    // progresión semanal
     if(weekLevel > 1){
-        series += (weekLevel-1); // semana 2 => +1, semana 3 => +2 ...
+        series += (weekLevel-1);
     }
 
     // objetivo músculo -> más volumen fuerza
@@ -1074,14 +1109,14 @@ function getSetsReps(nivel, objetivo, tipoEjercicio, fatiga, duracion, weekLevel
         hold = "40-60 seg ritmo constante";
     }
 
-    // ajuste por fatiga amarilla o roja: bajamos una serie
+    // fatiga reduce volumen
     if(fatiga==="amarillo"){
         series = Math.max(series-1,1);
     } else if(fatiga==="rojo"){
         series = Math.max(series-2,1);
     }
 
-    // ajuste por duración (20 min = menos volumen total)
+    // duración corta reduce volumen, duración larga aumenta
     if(duracion==="20 min"){
         series = Math.max(series-1,1);
     } else if(duracion==="+1 hora"){
@@ -1095,35 +1130,34 @@ function getSetsReps(nivel, objetivo, tipoEjercicio, fatiga, duracion, weekLevel
 }
 
 /* ==============================
-   RENDER VISUAL DE EJERCICIO
-   con checkbox ✅ y link a técnica
-   + advertencias por lesión
+   SEGURIDAD SEGÚN LESIONES
 ================================= */
 function buildSafetyNoteForExercise(ej, lesionesText){
     const low = (lesionesText||"").toLowerCase();
     let notes = [];
     if(low.includes("rodilla") && ej.tipo==="piernas"){
-        notes.push("⚠ Rodilla: no bajes más de lo cómodo, sin dolor agudo.");
+        notes.push("⚠ Rodilla: rango cómodo, sin dolor agudo.");
     }
     if(low.includes("lumbar") && (ej.tipo==="piernas" || ej.tipo==="core" || ej.tipo==="espalda")){
-        notes.push("⚠ Zona lumbar: mantén espalda neutra y evita rebotes rápidos.");
+        notes.push("⚠ Lumbar: espalda neutra, sin rebote rápido.");
     }
     return notes.join(" ");
 }
 
+/* ==============================
+   RENDER DE EJERCICIO
+================================= */
 function renderExerciseItem(ejercicio, cfg, lesionesText){
     const safety = buildSafetyNoteForExercise(ejercicio, lesionesText);
-    const ytQuery = encodeURIComponent(ejercicio.yt || ejercicio.nombre + " tecnica ejercicio");
+    const ytQuery = encodeURIComponent(ejercicio.yt || (ejercicio.nombre + " tecnica ejercicio"));
     const youtubeLink = "https://www.youtube.com/results?search_query="+ytQuery;
 
-    // cada ejercicio tendrá su propio checkbox; usaremos un listener luego
     return `
     <div class="exercise-item">
         <input type="checkbox" class="exercise-done-checkbox" />
         <div class="exercise-img">
-            <!-- imagen de referencia -->
             <img src="https://images.pexels.com/photos/4761780/pexels-photo-4761780.jpeg?auto=compress&cs=tinysrgb&h=200&w=200"
-                 alt="${ejercicio.nombre}" />
+                alt="${ejercicio.nombre}" />
         </div>
         <div class="exercise-info">
             <div class="exercise-name">
@@ -1151,75 +1185,61 @@ function renderBlock(tituloIcon, musculoLabel, ejerciciosHTML){
 }
 
 /* ==============================
-   PLANTILLAS DE DÍAS
-   - Adaptamos qué días existen según "dias/semana"
+   DÍAS SEGÚN FRECUENCIA
 ================================= */
 function getDayTypesForUser(diasSemana){
     const d = parseInt(diasSemana,10);
-    if(d<=2){ // gente que entrena poco: fullbody empuje/tirón/ piernas mezclado
-        return ["A","B"]; // rotan A/B/A/B...
+    if(d<=2){
+        return ["A","B"]; // rotan A/B
     }
     if(d<=4){
-        return ["A","B","C"]; // clásico
+        return ["A","B","C"]; // A/B/C
     }
-    // 5+ días: agregamos día D (movilidad/recuperación activa/core)
-    return ["A","B","C","D"];
+    return ["A","B","C","D"]; // 5+ días incluye recuperación activa
 }
 
+/* Definimos cada tipo de día: bloques por foco */
 function pickExercisesForDay(dayType, data, ejerciciosFiltrados){
-    // helper que devuelve lista por foco
-    function pickByFoco(focos, maxCant){
-        const arr = ejerciciosFiltrados.filter(e=>focos.includes(e.foco));
-        return arr.slice(0,maxCant);
-    }
-
-    // más liviano si fatiga rojo -> priorizar core / movilidad
     const fatigaRoja = data.fatiga==="rojo";
 
+    // helper para devolver estructura de bloques
     if(dayType==="A"){
         return {
             baseTitle:"Día A · Pierna fuerte + Core 🦵",
             blocks:[
-                {
-                    titulo:"Piernas & Glúteos 🦵",
+                {   titulo:"Piernas & Glúteos 🦵",
                     label:"Fuerza inferior",
                     focos: fatigaRoja ? ["piernas_estabilidad"] : ["piernas_gluteos","posterior_cadena"],
                     max:2
                 },
-                {
-                    titulo:"Core Estable 🧱",
+                {   titulo:"Core Estable 🧱",
                     label:"Abdomen / Zona lumbar",
                     focos:["core_estabilidad","core_superior"],
                     max:2
                 },
-                {
-                    titulo:"Activación Cardio 🫀",
-                    label:"Oxígeno / Calentamiento",
+                {   titulo:"Activación Cardio 🫀",
+                    label:"Oxígeno / Calor",
                     focos:["cardio_basico_total","cardio_moderado"],
                     max:1
                 }
             ]
         };
     }
-
     if(dayType==="B"){
         return {
             baseTitle:"Día B · Empuje (Pecho / Tríceps / Hombro) 💪",
             blocks:[
-                {
-                    titulo:"Pecho & Tríceps 💪",
+                {   titulo:"Pecho & Tríceps 💪",
                     label:"Empuje frontal",
                     focos:["empuje_pecho_triceps","hipertrofia_pecho","triceps_fondos"],
                     max:2
                 },
-                {
-                    titulo:"Hombro / Deltoide 🧊",
+                {   titulo:"Hombro / Deltoide 🧊",
                     label:"Estabilidad escapular",
                     focos:["deltoide_medio"],
                     max:1
                 },
-                {
-                    titulo:"Core Rápido 🧱",
+                {   titulo:"Core Rápido 🧱",
                     label:"Postura / Centro",
                     focos:["core_superior","core_estabilidad"],
                     max:1
@@ -1227,25 +1247,21 @@ function pickExercisesForDay(dayType, data, ejerciciosFiltrados){
             ]
         };
     }
-
     if(dayType==="C"){
         return {
-            baseTitle:"Día C · Tirón (Espalda) + Pierna Estabilidad + Cardio 🐍",
+            baseTitle:"Día C · Tirón (Espalda) + Pierna Control + Cardio 🐍",
             blocks:[
-                {
-                    titulo:"Espalda & Bíceps 🐍",
+                {   titulo:"Espalda & Bíceps 🐍",
                     label:"Tirón / Postura",
                     focos:["tiron_espalda_biceps","dorsal_anchura"],
                     max:2
                 },
-                {
-                    titulo:"Pierna Control 🦵",
+                {   titulo:"Pierna Control 🦵",
                     label:"Equilibrio / Estabilidad",
                     focos:["piernas_estabilidad","piernas_gluteos"],
                     max:1
                 },
-                {
-                    titulo:"Cardio / Resistencia 🫀",
+                {   titulo:"Cardio / Resistencia 🫀",
                     label:"Quema grasa / Aguante",
                     focos:["cardio_basico_total","cardio_moderado"],
                     max:1
@@ -1253,25 +1269,21 @@ function pickExercisesForDay(dayType, data, ejerciciosFiltrados){
             ]
         };
     }
-
-    // D = recuperación activa / movilidad / core suave
+    // D = recuperación, movilidad, core suave
     return {
         baseTitle:"Día D · Movilidad + Core + Bajo Impacto 🌿",
         blocks:[
-            {
-                titulo:"Movilidad Controlada 🌿",
+            {   titulo:"Movilidad Controlada 🌿",
                 label:"Articulaciones sanas",
                 focos:["piernas_estabilidad","core_estabilidad"],
                 max:2
             },
-            {
-                titulo:"Core Suave 🧱",
+            {   titulo:"Core Suave 🧱",
                 label:"Protección lumbar",
                 focos:["core_estabilidad","core_superior"],
                 max:2
             },
-            {
-                titulo:"Cardio Bajo Impacto 🫀",
+            {   titulo:"Cardio Bajo Impacto 🫀",
                 label:"Flujo / Recuperación",
                 focos:["cardio_moderado"],
                 max:1
@@ -1280,9 +1292,7 @@ function pickExercisesForDay(dayType, data, ejerciciosFiltrados){
     };
 }
 
-/* ==============================
-   FLAVOR DEL DIA SEGÚN OBJETIVO
-================================= */
+/* Ajusta el título con el objetivo (fuerza / cardio / movilidad / balance) */
 function getCycleFlavor(baseTitle, data){
     if(data.objetivo==="musculo" || data.preferencia==="fuerza"){
         return baseTitle + " · Enfoque Fuerza / Hipertrofia";
@@ -1296,157 +1306,65 @@ function getCycleFlavor(baseTitle, data){
     return baseTitle + " · Balance General";
 }
 
-/* ==============================
-   WARNINGS Y CALENTAMIENTO
-================================= */
-function buildWarmupText(lesiones){
-    const low = (lesiones||"").toLowerCase();
-    let tips = [];
-    if(low.includes("rodilla")){
-        tips.push("Calentamiento rodilla: flexiones de rodilla suaves apoyado/a en pared, tobillo activo, sentadilla parcial lenta x 10.");
-    }
-    if(low.includes("lumbar")){
-        tips.push("Calentamiento lumbar: cat-cow suave en el suelo, inclinaciones pélvicas controladas, nada brusco.");
-    }
-    if(!tips.length){
-        tips.push("Calentamiento general: movilidad de cuello, hombros, cadera y rodillas por ~5 minutos con movimientos lentos y sin dolor.");
-    }
-    return tips.join(" ");
+/* Calentamiento inicial personalizado (bloque grande arriba) */
+function renderWarmupBlock(calentamientoMoves){
+    const listHTML = calentamientoMoves.map(m=>`
+        <li style="margin-bottom:.4rem;font-size:.8rem;line-height:1.4;">${m}</li>
+    `).join("");
+    return `
+    <div class="routine-block">
+        <h3>
+            <span>🔥 Calentamiento Inicial</span>
+            <span class="routine-muscle">Movilidad + Activación</span>
+        </h3>
+        <ul style="padding-left:1rem;margin:0;list-style:disc;">
+            ${listHTML}
+        </ul>
+    </div>`;
 }
 
+/* Bloque final estiramientos */
+function renderStretchBlock(stretches){
+    const listHTML = stretches.map(m=>`
+        <li style="margin-bottom:.4rem;font-size:.8rem;line-height:1.4;">${m}</li>
+    `).join("");
+    return `
+    <div class="routine-block">
+        <h3>
+            <span>🧘 Estiramientos Finales</span>
+            <span class="routine-muscle">Relajación / Recuperación</span>
+        </h3>
+        <ul style="padding-left:1rem;margin:0;list-style:disc;">
+            ${listHTML}
+        </ul>
+    </div>`;
+}
+
+/* ==============================
+   OVERUSE / SOBRECARGA
+================================= */
 function shouldShowOveruseWarning(historyArr){
-    // Miramos el historial reciente (últimas 3 entradas)
+    // Miramos historial reciente (últimas 3 entradas)
     const recent = historyArr.slice(-3);
-    const countPiernaPesada = recent.filter(h=>h.includes("Día A") || h.includes("Pierna fuerte")).length;
+    const countPiernaPesada = recent.filter(h=>
+        h.includes("Día A") || h.includes("Pierna fuerte")
+    ).length;
     return countPiernaPesada >= 2;
 }
 
 /* ==============================
-   RENDER RUTINA COMPLETA
+   RENDER HISTORIAL
 ================================= */
-function generarRutina(data){
-    // Guardar perfil en localStorage
-    saveProfile(data);
-
-    // cargamos index y weekLevel
-    let routineIndex = loadRoutineIndex();
-    let weekLevel = loadWeekLevel();
-
-    // día que toca según días/semana
-    const dayTypes = getDayTypesForUser(data.dias);
-    const currentDayType = dayTypes[routineIndex % dayTypes.length];
-
-    // filtramos ejercicios por lugar
-    const lugarPreferido = data.lugar === "mixto" ? "casa" : data.lugar;
-    const ejerciciosFiltrados = EXERCISES.filter(ex => ex.lugar === lugarPreferido || data.lugar==="mixto");
-
-    // obtenemos layout del día actual
-    const planDelDia = pickExercisesForDay(currentDayType, data, ejerciciosFiltrados);
-
-    // construimos bloques (ajustamos cantidad por duración)
-    const longSession = data.duracion === "+1 hora";
-    const shortSession = data.duracion === "20 min";
-
-    let blocksHTML = "";
-    planDelDia.blocks.forEach(bloque => {
-        let listaEj = [];
-        // calcular máximo dinámico según duración
-        let maxCant = bloque.max;
-        if(shortSession){ maxCant = Math.max(1, maxCant-1); }
-        if(longSession){ maxCant = maxCant+1; }
-
-        // recolectar ejercicios por foco
-        const focos = bloque.focos;
-        const pool = ejerciciosFiltrados.filter(e => focos.includes(e.foco));
-        // tomamos primeros distintos hasta maxCant
-        const chosen = pool.slice(0,maxCant);
-
-        let inner = "";
-        chosen.forEach(ex=>{
-            const cfg = getSetsReps(
-                data.nivel,
-                data.objetivo,
-                ex.tipo,
-                data.fatiga,
-                data.duracion,
-                weekLevel
-            );
-            inner += renderExerciseItem(ex,cfg,data.lesiones);
-        });
-
-        blocksHTML += renderBlock(bloque.titulo, bloque.label, inner);
+function renderHistoryList(histArr){
+    const wrap = document.getElementById("historyList");
+    wrap.innerHTML = "";
+    const reversed = [...histArr].reverse();
+    reversed.forEach(h=>{
+        const div = document.createElement("div");
+        div.className="history-item";
+        div.textContent = h;
+        wrap.appendChild(div);
     });
-
-    // info meta arriba
-    const metaParts = [];
-    metaParts.push(`${data.dias} días/semana`);
-    metaParts.push(`${data.duracion} por sesión`);
-    metaParts.push(`Objetivo: ${data.objetivo}`);
-    metaParts.push(`Nivel: ${data.nivel}`);
-    const metaString = metaParts.join(" • ");
-
-    // flavor del título
-    const flavoredTitle = getCycleFlavor(planDelDia.baseTitle, data);
-
-    // fatiga label
-    let fatigaText = "💚 Fresco";
-    let fatigaClass = "fatigue-green";
-    if(data.fatiga==="amarillo"){ fatigaText = "🟡 Cansado"; fatigaClass="fatigue-yellow"; }
-    if(data.fatiga==="rojo"){ fatigaText = "🔴 Muy cargado"; fatigaClass="fatigue-red"; }
-
-    const fatigaView = document.getElementById("fatigaView");
-    fatigaView.textContent = "Estado: " + fatigaText;
-    fatigaView.className = "fatigue-label " + fatigaClass;
-
-    // aplicar en DOM
-    document.getElementById("chipLugar").textContent = data.lugar.toUpperCase();
-    document.getElementById("routineMeta").textContent = metaString;
-    document.getElementById("routineBlocks").innerHTML = blocksHTML;
-    document.getElementById("cycleLabel").textContent = flavoredTitle;
-
-    // mostrar calentamiento personalizado
-    const warmupMsg = buildWarmupText(data.lesiones);
-    const warmupBox = document.getElementById("warmupBox");
-    warmupBox.textContent = "Calentamiento recomendado: " + warmupMsg;
-    warmupBox.style.display = "block";
-
-    // advertencias lesiones
-    const showAlerta = (
-        (data.lesiones && data.lesiones.trim().toLowerCase() !== "ninguna") ||
-        (data.condicion && data.condicion.trim().toLowerCase() !== "ninguna")
-    );
-    document.getElementById("alertaLesion").style.display = showAlerta ? "block" : "none";
-
-    // historial y sobrecarga
-    const nowStr = new Date().toLocaleString();
-    const histEntry = `${nowStr} · ${flavoredTitle}`;
-    const histArr = loadHistory();
-    histArr.push(histEntry);
-    saveHistory(histArr);
-    renderHistoryList(histArr);
-
-    const overuse = shouldShowOveruseWarning(histArr);
-    document.getElementById("sobrecargaWarning").style.display = overuse ? "block" : "none";
-
-    // mostrar secciones
-    document.getElementById("routineSection").style.display = "block";
-    document.getElementById("historySection").style.display = "block";
-
-    // scroll suave a rutina
-    document.getElementById("routineSection").scrollIntoView({behavior:"smooth"});
-
-    // avanzar el índice para próxima vez
-    routineIndex = (routineIndex + 1) % dayTypes.length;
-    saveRoutineIndex(routineIndex);
-
-    // progresión semanal básica:
-    // cada 5 rutinas generadas, subimos weekLevel (simula pasar de semana)
-    if(histArr.length % 5 === 0){
-        saveWeekLevel( loadWeekLevel() + 1 );
-    }
-
-    // ahora que están en DOM los ejercicios, conectamos los checkboxes
-    attachCheckboxHandlers();
 }
 
 /* ==============================
@@ -1463,22 +1381,6 @@ function attachCheckboxHandlers(){
                 item.classList.remove("done");
             }
         });
-    });
-}
-
-/* ==============================
-   HISTORIAL
-================================= */
-function renderHistoryList(histArr){
-    const wrap = document.getElementById("historyList");
-    wrap.innerHTML = "";
-    // mostrar del más reciente al más antiguo
-    const reversed = [...histArr].reverse();
-    reversed.forEach(h=>{
-        const div = document.createElement("div");
-        div.className="history-item";
-        div.textContent = h;
-        wrap.appendChild(div);
     });
 }
 
@@ -1508,29 +1410,7 @@ document.getElementById("printBtn").addEventListener("click",()=>{
 });
 
 /* ==============================
-   NAVBAR BOTONES
-================================= */
-document.getElementById("navShowRoutine").addEventListener("click",()=>{
-    document.getElementById("routineSection").scrollIntoView({behavior:"smooth"});
-});
-document.getElementById("navGenerateNext").addEventListener("click",()=>{
-    // Generar una nueva rutina con el perfil guardado actual sin tener que tocar el form
-    const perfilGuardado = getDataFromUIorStorage();
-    if(perfilGuardado){
-        generarRutina(perfilGuardado);
-    }else{
-        alert("Completa tu perfil primero para generar rutina.");
-    }
-});
-document.getElementById("navShowProfile").addEventListener("click",()=>{
-    document.getElementById("perfilCard").scrollIntoView({behavior:"smooth"});
-});
-document.getElementById("navShowHistory").addEventListener("click",()=>{
-    document.getElementById("historySection").scrollIntoView({behavior:"smooth"});
-});
-
-/* ==============================
-   TOMAR DATOS DEL FORM / STORAGE
+   DATOS DEL FORM / STORAGE
 ================================= */
 function getDataFromUI(){
     return {
@@ -1561,8 +1441,9 @@ function getDataFromUI(){
         motivacionEspecial: document.getElementById("motivacionEspecial").value
     };
 }
-
-// mezcla: si falta algo en UI, intento usar perfil ya guardado
+function saveProfile(data){
+    localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(data));
+}
 function getDataFromUIorStorage(){
     const ui = getDataFromUI();
     const saved = loadProfile() || {};
@@ -1603,7 +1484,7 @@ function fillUIFromProfile(p){
 }
 
 /* ==============================
-   VALIDACIÓN MÍNIMA
+   VALIDACIÓN
 ================================= */
 function validateData(data){
     if(!data.genero || !data.edad || !data.peso || !data.altura ||
@@ -1615,30 +1496,228 @@ function validateData(data){
 }
 
 /* ==============================
-   EVENTOS PRINCIPALES
+   RENDER PRINCIPAL DE LA RUTINA
+   (con calentamiento al inicio,
+   mínimo 5 ejercicios,
+   estiramientos al final)
+================================= */
+function generarRutina(data){
+    // guardar perfil
+    saveProfile(data);
+
+    let routineIndex = loadRoutineIndex();
+    let weekLevel = loadWeekLevel();
+
+    // determinar día según frecuencia semanal
+    const dayTypes = getDayTypesForUser(data.dias);
+    const currentDayType = dayTypes[routineIndex % dayTypes.length];
+
+    // filtrar ejercicios según lugar
+    const lugarPreferido = data.lugar === "mixto" ? "casa" : data.lugar;
+    const ejerciciosFiltrados = EXERCISES.filter(ex => ex.lugar === lugarPreferido || data.lugar==="mixto");
+
+    // layout del día
+    const planDelDia = pickExercisesForDay(currentDayType, data, ejerciciosFiltrados);
+
+    // construir bloques de ejercicios
+    const longSession = data.duracion === "+1 hora";
+    const shortSession = data.duracion === "20 min";
+
+    let allExercisesRendered = []; // para contar total ejercicios del día
+
+    let blocksHTML = "";
+
+    // 1) bloque de calentamiento al inicio
+    const warmupMoves = buildWarmupMoves(data.lesiones);
+    const warmupHTML = renderWarmupBlock(warmupMoves);
+    blocksHTML += warmupHTML;
+
+    // 2) bloques principales (pierna/pecho/core/cardio/etc.)
+    planDelDia.blocks.forEach(bloque => {
+        let inner = "";
+        // máximo dinámico por duración
+        let maxCant = bloque.max;
+        if(shortSession){ maxCant = Math.max(1, maxCant-1); }
+        if(longSession){ maxCant = maxCant+1; }
+
+        // sacamos ejercicios que coincidan con los focos
+        const pool = ejerciciosFiltrados.filter(e => bloque.focos.includes(e.foco));
+        const chosen = pool.slice(0,maxCant);
+
+        chosen.forEach(ex=>{
+            const cfg = getSetsReps(
+                data.nivel,
+                data.objetivo,
+                ex.tipo,
+                data.fatiga,
+                data.duracion,
+                weekLevel
+            );
+            const rendered = renderExerciseItem(ex,cfg,data.lesiones);
+            inner += rendered;
+            allExercisesRendered.push(rendered);
+        });
+
+        blocksHTML += renderBlock(bloque.titulo, bloque.label, inner);
+    });
+
+    // 3) asegurar mínimo 5 ejercicios totales
+    if(allExercisesRendered.length < 5){
+        // generamos más ejercicios de relleno seguro:
+        // prioridad: core_estabilidad, core_superior, cardio_moderado (bajo impacto)
+        const safeFocos = ["core_estabilidad","core_superior","cardio_moderado","cardio_basico_total","piernas_estabilidad"];
+        const extraPool = ejerciciosFiltrados.filter(e => safeFocos.includes(e.foco));
+        // evitamos duplicar demasiado literal el mismo HTML si ya está
+        // (simplificación: agregamos más del pool hasta llegar a 5)
+        let extraInner = "";
+        for(let i=0; i<extraPool.length && allExercisesRendered.length<5; i++){
+            const ex = extraPool[i];
+            const cfg = getSetsReps(
+                data.nivel,
+                data.objetivo,
+                ex.tipo,
+                data.fatiga,
+                data.duracion,
+                weekLevel
+            );
+            const rendered = renderExerciseItem(ex,cfg,data.lesiones);
+            extraInner += rendered;
+            allExercisesRendered.push(rendered);
+        }
+        if(extraInner){
+            blocksHTML += renderBlock("Extras Controlados 🌿", "Apoyo / Bajo impacto", extraInner);
+        }
+    }
+
+    // 4) bloque de estiramientos al final
+    const stretchList = buildStretchList();
+    const stretchHTML = renderStretchBlock(stretchList);
+    blocksHTML += stretchHTML;
+
+    // info meta arriba
+    const metaParts = [];
+    metaParts.push(`${data.dias} días/semana`);
+    metaParts.push(`${data.duracion} por sesión`);
+    metaParts.push(`Objetivo: ${data.objetivo}`);
+    metaParts.push(`Nivel: ${data.nivel}`);
+    const metaString = metaParts.join(" • ");
+
+    // título "flavor"
+    const flavoredTitle = getCycleFlavor(planDelDia.baseTitle, data);
+
+    // fatiga label
+    let fatigaText = "💚 Fresco";
+    let fatigaClass = "fatigue-green";
+    if(data.fatiga==="amarillo"){ fatigaText = "🟡 Cansado"; fatigaClass="fatigue-yellow"; }
+    if(data.fatiga==="rojo"){ fatigaText = "🔴 Muy cargado"; fatigaClass="fatigue-red"; }
+
+    const fatigaView = document.getElementById("fatigaView");
+    fatigaView.textContent = "Estado: " + fatigaText;
+    fatigaView.className = "fatigue-label " + fatigaClass;
+
+    // aplicar en DOM
+    document.getElementById("chipLugar").textContent = data.lugar.toUpperCase();
+    document.getElementById("routineMeta").textContent = metaString;
+    document.getElementById("routineBlocks").innerHTML = blocksHTML;
+    document.getElementById("cycleLabel").textContent = flavoredTitle;
+
+    // mostrar estiramientos box en nota:
+    const stretchBox = document.getElementById("stretchBox");
+    stretchBox.textContent = "Después de entrenar: mantén cada estiramiento 20-30s sin rebote, respirando lento.";
+    stretchBox.style.display = "block";
+
+    // mostrar calentamiento personalizado también en warmupBox descripción rápida
+    const warmupBox = document.getElementById("warmupBox");
+    warmupBox.textContent = "Calentamiento recomendado: Haz estos movimientos lentos antes de empezar las series principales.";
+    warmupBox.style.display = "block";
+
+    // advertencias lesiones
+    const showAlerta = (
+        (data.lesiones && data.lesiones.trim().toLowerCase() !== "ninguna") ||
+        (data.condicion && data.condicion.trim().toLowerCase() !== "ninguna")
+    );
+    document.getElementById("alertaLesion").style.display = showAlerta ? "block" : "none";
+
+    // historial y sobrecarga
+    const nowStr = new Date().toLocaleString();
+    const histEntry = `${nowStr} · ${flavoredTitle}`;
+    const histArr = loadHistory();
+    histArr.push(histEntry);
+    saveHistory(histArr);
+    renderHistoryList(histArr);
+
+    const overuse = shouldShowOveruseWarning(histArr);
+    document.getElementById("sobrecargaWarning").style.display = overuse ? "block" : "none";
+
+    // mostrar secciones
+    document.getElementById("routineSection").style.display = "block";
+    document.getElementById("historySection").style.display = "block";
+
+    // scroll suave hasta rutina
+    document.getElementById("routineSection").scrollIntoView({behavior:"smooth"});
+
+    // avanzar índice para próxima vez
+    routineIndex = (routineIndex + 1) % dayTypes.length;
+    saveRoutineIndex(routineIndex);
+
+    // progresión semanal básica:
+    // cada 5 rutinas generadas, subimos weekLevel
+    if(histArr.length % 5 === 0){
+        saveWeekLevel( loadWeekLevel() + 1 );
+    }
+
+    // conectar checkboxes
+    attachCheckboxHandlers();
+}
+
+/* ==============================
+   NAVBAR BOTONES
+================================= */
+document.getElementById("navShowRoutine").addEventListener("click",()=>{
+    document.getElementById("routineSection").scrollIntoView({behavior:"smooth"});
+});
+document.getElementById("navGenerateNext").addEventListener("click",()=>{
+    const perfilGuardado = getDataFromUIorStorage();
+    if(perfilGuardado){
+        if(!validateData(perfilGuardado)){
+            alert("Completa tu perfil primero para generar rutina.");
+            return;
+        }
+        generarRutina(perfilGuardado);
+    }else{
+        alert("Completa tu perfil primero para generar rutina.");
+    }
+});
+document.getElementById("navShowProfile").addEventListener("click",()=>{
+    document.getElementById("perfilCard").scrollIntoView({behavior:"smooth"});
+});
+document.getElementById("navShowHistory").addEventListener("click",()=>{
+    document.getElementById("historySection").scrollIntoView({behavior:"smooth"});
+});
+
+/* ==============================
+   EVENTO BOTÓN PRINCIPAL
 ================================= */
 document.getElementById("generarBtn").addEventListener("click",()=>{
     const data = getDataFromUIorStorage();
-
     if(!validateData(data)){
         alert("Por favor completa los campos obligatorios marcados (listas principales).");
         return;
     }
-
     generarRutina(data);
 });
 
-/* iniciar */
+/* ==============================
+   INIT
+================================= */
 (function init(){
     loadTheme();
 
-    // si hay perfil guardado lo cargamos al form
     const savedProfile = loadProfile();
     if(savedProfile){
         fillUIFromProfile(savedProfile);
     }
 
-    // mostrar historial guardado si existe
     const histArr = loadHistory();
     if(histArr && histArr.length){
         document.getElementById("historySection").style.display = "block";
