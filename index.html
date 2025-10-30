@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,8 +12,18 @@
         --text:#1a1a1a;
         --card:#ffffff;
         --border:#d9d9d9;
+        --subtext:#555;
         --radius-lg:20px;
         --radius-sm:10px;
+    }
+    [data-theme="dark"]{
+        --bg:#0a0f10;
+        --text:#f8f8f8;
+        --card:#11181c;
+        --border:#2d3a3f;
+        --subtext:#9ba9ad;
+        --turq:#11c5c6;
+        --turq-dark:#0ea7a8;
     }
 
     *{
@@ -38,10 +48,34 @@
         display:flex;
         flex-direction:column;
         gap:1.5rem;
+        position:relative;
+        padding-bottom:5rem; /* espacio para navbar fija */
     }
 
     header{
         text-align:center;
+        position:relative;
+    }
+
+    .top-actions{
+        position:absolute;
+        top:-0.5rem;
+        right:0;
+        display:flex;
+        gap:.5rem;
+        flex-wrap:wrap;
+        justify-content:flex-end;
+    }
+
+    .small-btn{
+        background:var(--card);
+        color:var(--text);
+        border:1px solid var(--border);
+        border-radius:999px;
+        font-size:.7rem;
+        font-weight:600;
+        padding:.4rem .7rem;
+        cursor:pointer;
     }
 
     .badge{
@@ -66,7 +100,7 @@
     .subtitle{
         font-size:.9rem;
         line-height:1.4;
-        color:#555;
+        color:var(--subtext);
         max-width:480px;
         margin:0 auto;
     }
@@ -76,7 +110,7 @@
         background:var(--card);
         border:1px solid var(--border);
         border-radius:var(--radius-lg);
-        box-shadow:0 24px 40px -12px rgba(0,0,0,.08);
+        box-shadow:0 24px 40px -12px rgba(0,0,0,.4);
         padding:1rem 1rem 1.25rem;
     }
 
@@ -127,7 +161,7 @@
     label{
         font-size:.8rem;
         font-weight:600;
-        color:#222;
+        color:var(--text);
         display:flex;
         justify-content:space-between;
         flex-wrap:wrap;
@@ -135,18 +169,18 @@
     }
     label small{
         font-weight:400;
-        color:#777;
+        color:var(--subtext);
         font-size:.7rem;
     }
 
     input, select, textarea{
         width:100%;
-        background:#fff;
+        background:var(--bg);
         border:1px solid var(--border);
         border-radius:var(--radius-sm);
         padding:.7rem .8rem;
         font-size:.9rem;
-        color:#000;
+        color:var(--text);
         outline:none;
     }
     input:focus, select:focus, textarea:focus{
@@ -159,7 +193,7 @@
         min-height:60px;
     }
 
-    /* botón generar */
+    /* botón principal */
     .btn-main{
         background:var(--turq);
         color:#fff;
@@ -181,10 +215,10 @@
 
     /* Rutina resultado */
     .routine-card{
-        background:#fff;
+        background:var(--card);
         border:2px solid var(--turq);
         border-radius:var(--radius-lg);
-        box-shadow:0 32px 56px -16px rgba(0,0,0,.15);
+        box-shadow:0 32px 56px -16px rgba(0,0,0,.5);
         padding:1rem;
     }
 
@@ -199,20 +233,23 @@
         display:flex;
         flex-wrap:wrap;
         gap:.5rem;
-        align-items:center;
+        align-items:flex-start;
         justify-content:space-between;
     }
 
     .routine-title{
         font-size:1.1rem;
         font-weight:700;
-        color:#000;
+        color:var(--text);
+        display:flex;
+        flex-direction:column;
+        gap:.4rem;
     }
 
     .routine-meta{
         font-size:.75rem;
         line-height:1.3;
-        color:#444;
+        color:var(--subtext);
         display:flex;
         flex-wrap:wrap;
         gap:.5rem;
@@ -225,7 +262,42 @@
         padding:.3rem .6rem;
         font-size:.7rem;
         line-height:1;
+        min-width:max-content;
+        text-align:center;
     }
+
+    .routine-cycle-label{
+        font-size:.75rem;
+        font-weight:600;
+        background:#eefefe;
+        color:#0a5c5c;
+        border:1px solid #0ea7a833;
+        border-radius:999px;
+        padding:.3rem .6rem;
+        line-height:1.2;
+    }
+
+    [data-theme="dark"] .routine-cycle-label{
+        background:#0a3b3b;
+        color:#cfffff;
+    }
+
+    .fatigue-label{
+        font-size:.7rem;
+        font-weight:600;
+        border-radius:999px;
+        padding:.3rem .6rem;
+        line-height:1.2;
+        border:1px solid var(--border);
+    }
+
+    .fatigue-green{ background:#d8ffd8; color:#003b00; }
+    .fatigue-yellow{ background:#fff8cc; color:#4a3b00; }
+    .fatigue-red{ background:#ffd8d8; color:#3b0000; }
+
+    [data-theme="dark"] .fatigue-green{ background:#003b00; color:#d8ffd8; }
+    [data-theme="dark"] .fatigue-yellow{ background:#4a3b00; color:#fff8cc; }
+    [data-theme="dark"] .fatigue-red{ background:#3b0000; color:#ffd8d8; }
 
     .routine-block{
         border:1px solid var(--border);
@@ -236,7 +308,7 @@
     .routine-block h3{
         font-size:.9rem;
         font-weight:600;
-        color:#000;
+        color:var(--text);
         display:flex;
         justify-content:space-between;
         align-items:flex-start;
@@ -253,6 +325,11 @@
         padding:.2rem .5rem;
         line-height:1.2;
     }
+    [data-theme="dark"] .routine-muscle{
+        background:#0a3b3b;
+        color:#cfffff;
+        border-color:#0ea7a888;
+    }
 
     .exercise-list{
         display:grid;
@@ -263,6 +340,19 @@
         display:flex;
         gap:.8rem;
         align-items:flex-start;
+        position:relative;
+    }
+
+    .exercise-done-checkbox{
+        position:absolute;
+        top:.4rem;
+        right:.4rem;
+        transform:scale(1.2);
+    }
+
+    .done .exercise-info{
+        opacity:.4;
+        text-decoration:line-through;
     }
 
     .exercise-img{
@@ -272,7 +362,7 @@
         border-radius:var(--radius-sm);
         overflow:hidden;
         border:1px solid var(--border);
-        background:#f8f8f8;
+        background:#111;
         display:flex;
         align-items:center;
         justify-content:center;
@@ -291,22 +381,32 @@
         display:flex;
         flex-direction:column;
         gap:.25rem;
+        color:var(--text);
     }
 
     .exercise-name{
         font-size:.9rem;
         font-weight:600;
-        color:#000;
+        color:var(--text);
         line-height:1.2;
+        display:flex;
+        flex-wrap:wrap;
+        gap:.4rem;
+        align-items:center;
     }
     .exercise-sets{
         font-size:.8rem;
-        color:#333;
+        color:var(--text);
     }
     .exercise-extra{
         font-size:.7rem;
-        color:#666;
+        color:var(--subtext);
         line-height:1.3;
+    }
+    .exercise-link a{
+        font-size:.7rem;
+        color:var(--turq);
+        text-decoration:none;
     }
 
     .note-box{
@@ -320,14 +420,94 @@
         margin-top:.5rem;
     }
 
+    [data-theme="dark"] .note-box{
+        background:#0a3b3b;
+        color:#cfffff;
+        border-color:#0ea7a866;
+    }
+
+    .warning-box{
+        background:#fff8cc;
+        border:1px solid #c7a400;
+        color:#4a3b00;
+    }
+
+    [data-theme="dark"] .warning-box{
+        background:#4a3b00;
+        border-color:#c7a400;
+        color:#fff8cc;
+    }
+
+    /* historial */
+    .history-card{
+        background:var(--card);
+        border:1px solid var(--border);
+        border-radius:var(--radius-lg);
+        padding:1rem;
+        box-shadow:0 24px 40px -12px rgba(0,0,0,.4);
+        font-size:.8rem;
+        color:var(--text);
+    }
+    .history-card h3{
+        font-size:.9rem;
+        font-weight:600;
+        margin-bottom:.5rem;
+        color:var(--text);
+        display:flex;
+        align-items:center;
+        gap:.4rem;
+    }
+    .history-list{
+        max-height:150px;
+        overflow:auto;
+        font-size:.75rem;
+        line-height:1.4;
+        color:var(--subtext);
+    }
+    .history-item{
+        border-bottom:1px solid var(--border);
+        padding:.4rem 0;
+    }
+
     footer{
         text-align:center;
         font-size:.7rem;
-        color:#888;
+        color:var(--subtext);
         padding-bottom:3rem;
     }
 
-    /* mobile spacing fix for bottom */
+    /* navbar inferior tipo app */
+    .bottom-nav{
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        background:var(--card);
+        border-top:1px solid var(--border);
+        box-shadow:0 -16px 32px -8px rgba(0,0,0,.6);
+        display:flex;
+        justify-content:space-around;
+        padding:.6rem .5rem .8rem;
+        z-index:999;
+    }
+    .nav-btn{
+        flex:1;
+        border:none;
+        background:none;
+        color:var(--text);
+        font-size:.7rem;
+        font-weight:600;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:.25rem;
+        cursor:pointer;
+    }
+    .nav-btn span.icon{
+        font-size:1rem;
+        line-height:1;
+    }
+
     @media(min-width:768px){
         body{
             padding:3rem 1rem 6rem;
@@ -345,21 +525,47 @@
             padding:1.25rem 1.25rem 1.5rem;
         }
     }
+
+    /* impresión: solo rutina */
+    @media print {
+        body{
+            background:#fff;
+            color:#000;
+            padding:0;
+        }
+        .card,
+        header,
+        footer,
+        .bottom-nav,
+        .history-card{
+            display:none !important;
+        }
+        .routine-card{
+            border:1px solid #000 !important;
+            box-shadow:none !important;
+        }
+    }
 </style>
 </head>
 <body>
 <div class="app">
 
     <header>
+        <div class="top-actions">
+            <button class="small-btn" id="themeToggle">🌙 Oscuro</button>
+            <button class="small-btn" id="printBtn">🖨 PDF</button>
+        </div>
+
         <div class="badge">Rutina personalizada</div>
         <h1>Plan de Entrenamiento Casa / Gimnasio</h1>
         <p class="subtitle">
-            Completa el formulario. Te genero una rutina de cuerpo completo con series, repeticiones y ejemplos visuales.
+            Rellena tu perfil una vez (se guarda). Te doy Día A / B / C con progresión,
+            descanso activo y alertas de sobrecarga. Marca cada ejercicio como ✅ Hecho.
         </p>
     </header>
 
-    <!-- FORM -->
-    <section class="card">
+    <!-- FORM PERFIL -->
+    <section class="card" id="perfilCard">
         <h2><span class="icon">1</span>Datos personales básicos 🧍‍♂️</h2>
         <form id="fitnessForm">
             <div class="field-row">
@@ -551,6 +757,23 @@
                 </div>
             </div>
 
+            <div class="field-row">
+                <div class="field">
+                    <label>¿Cómo te sientes HOY? (fatiga)</label>
+                    <select id="fatiga">
+                        <option value="verde">💚 Normal / fresco</option>
+                        <option value="amarillo">🟡 Cansado</option>
+                        <option value="rojo">🔴 Muy cargado</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Sugerencia de peso (opcional)
+                        <small>ej: "Sentadilla ~40kg", "Press banca ~20kg"</small>
+                    </label>
+                    <input id="fuerzaBase" placeholder="Peso que ya manejas cómodo" />
+                </div>
+            </div>
+
             <hr style="border:none;border-top:1px solid var(--border);" />
 
             <h2><span class="icon">5</span>Seguimiento y metas 📈</h2>
@@ -581,7 +804,6 @@
                 </div>
             </div>
 
-            <!-- Botón generar rutina -->
             <button type="button" class="btn-main" id="generarBtn">GENERAR MI RUTINA 🔥</button>
         </form>
     </section>
@@ -590,16 +812,23 @@
     <section id="routineSection" class="routine-card" style="display:none;">
         <div class="routine-header">
             <div class="routine-header-top">
-                <div class="routine-title">Tu Rutina Personalizada</div>
-                <div class="routine-chip" id="chipLugar">Casa</div>
+                <div class="routine-title">
+                    <div id="cycleLabel" class="routine-cycle-label">Día A · Pierna fuerte + Core</div>
+                    <div class="routine-meta" id="routineMeta"></div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;min-width:max-content;">
+                    <div class="routine-chip" id="chipLugar">CASA</div>
+                    <div id="fatigaView" class="fatigue-label fatigue-green">Estado: 💚 Fresco</div>
+                </div>
             </div>
-            <div class="routine-meta" id="routineMeta">
-                <!-- Se rellena con JS -->
-            </div>
+
             <div class="note-box" id="alertaLesion" style="display:none;">
-                ⚠ Recomendación médica: indicaste lesión/condición. Mantén técnica suave,
-                evita dolor agudo y considera consulta profesional antes de forzar.
+                ⚠ Cuidado especial por tu lesión/condición. Evita dolor agudo, prioriza técnica lenta.
             </div>
+            <div class="note-box warning-box" id="sobrecargaWarning" style="display:none;">
+                Recomendación de recuperación activa: vienes repitiendo pierna pesada muy seguido. Hoy baja la intensidad y enfócate en movilidad / core.
+            </div>
+            <div class="note-box" id="warmupBox" style="display:none;"></div>
         </div>
 
         <div id="routineBlocks">
@@ -607,199 +836,312 @@
         </div>
 
         <div class="note-box" id="extraNotas">
-            Respira entre series (60-90s fuerza / 30-45s cardio). Calienta 5 min (movilidad de cuello,
-            hombros, cadera, rodillas) y termina con estiramientos suaves.
+            Respira entre series (60-90s fuerza / 30-45s cardio). Calienta 5 min (cuello,
+            hombros, cadera, rodillas). Termina con estiramientos suaves y respiración profunda.
         </div>
     </section>
 
+    <!-- HISTORIAL -->
+    <section id="historySection" class="history-card" style="display:none;">
+        <h3>🕒 Historial de sesiones</h3>
+        <div class="history-list" id="historyList"></div>
+    </section>
+
     <footer>
-        Hecho para ti 💪 | Blanco + turquesa | Cuerpo completo
+        Guardado local. No sube nada a internet. 💙
     </footer>
+
 </div>
 
+<!-- navbar inferior tipo app -->
+<nav class="bottom-nav">
+    <button class="nav-btn" id="navShowRoutine">
+        <span class="icon">📋</span>
+        <span>Rutina hoy</span>
+    </button>
+    <button class="nav-btn" id="navGenerateNext">
+        <span class="icon">🔁</span>
+        <span>Cambiar día</span>
+    </button>
+    <button class="nav-btn" id="navShowProfile">
+        <span class="icon">⚙</span>
+        <span>Perfil</span>
+    </button>
+    <button class="nav-btn" id="navShowHistory">
+        <span class="icon">📜</span>
+        <span>Historial</span>
+    </button>
+</nav>
+
 <script>
-/*
-    Mini "base de datos" de ejercicios
-    Cada ejercicio tiene:
-    - nombre
-    - musculo
-    - img (ejemplo ilustrativo con URLs genéricas a contenidos fitness libres/stock)
-    - tipo ("fuerza","cardio","core","piernas","espalda","pecho","hombro","gluteos")
-    - casa / gym accesibilidad
-*/
+/* ==============================
+   UTILIDAD LOCALSTORAGE
+================================= */
+const STORAGE_KEY_PROFILE = "rutinaPerfilV1";
+const STORAGE_KEY_ROUTINE_INDEX = "rutinaIndexV1";
+const STORAGE_KEY_WEEK_LEVEL = "rutinaWeekLevelV1"; // progresión semanal
+const STORAGE_KEY_HISTORY = "rutinaHistoryV1";
+
+function loadProfile(){
+    try{
+        return JSON.parse(localStorage.getItem(STORAGE_KEY_PROFILE)) || null;
+    }catch(e){return null;}
+}
+function saveProfile(data){
+    localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(data));
+}
+function loadRoutineIndex(){
+    let idx = parseInt(localStorage.getItem(STORAGE_KEY_ROUTINE_INDEX),10);
+    if(isNaN(idx)){idx=0;}
+    return idx;
+}
+function saveRoutineIndex(idx){
+    localStorage.setItem(STORAGE_KEY_ROUTINE_INDEX, String(idx));
+}
+function loadWeekLevel(){
+    let lvl = parseInt(localStorage.getItem(STORAGE_KEY_WEEK_LEVEL),10);
+    if(isNaN(lvl)){lvl=1;} // semana 1 por defecto
+    return lvl;
+}
+function saveWeekLevel(lvl){
+    localStorage.setItem(STORAGE_KEY_WEEK_LEVEL, String(lvl));
+}
+function loadHistory(){
+    try{
+        return JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY)) || [];
+    }catch(e){return [];}
+}
+function saveHistory(arr){
+    localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(arr));
+}
+
+/* ==============================
+   BASE DE EJERCICIOS
+   foco nos ayuda a armar bloques
+================================= */
 const EXERCISES = [
     {
         nombre:"Sentadilla libre",
         musculo:"Piernas / Glúteos",
         tipo:"piernas",
+        foco:"piernas_gluteos",
         lugar:"casa",
-        img:"https://images.pexels.com/photos/4761780/pexels-photo-4761780.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Espalda recta, rodillas alineadas con pies. Baja controlado."
+        tips:"Espalda recta, rodillas alineadas con pies. Baja controlado.",
+        yt:"sentadilla correcta principiantes"
     },
     {
         nombre:"Peso muerto con mancuernas",
         musculo:"Isquios / Glúteos",
         tipo:"piernas",
+        foco:"posterior_cadena",
         lugar:"gimnasio",
-        img:"https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Empuja caderas atrás, no redondees la espalda."
+        tips:"Empuja caderas atrás, no redondees la espalda.",
+        yt:"peso muerto mancuernas tecnica espalda recta"
     },
     {
         nombre:"Zancadas alternadas",
         musculo:"Piernas / Estabilidad",
         tipo:"piernas",
+        foco:"piernas_estabilidad",
         lugar:"casa",
-        img:"https://images.pexels.com/photos/4047042/pexels-photo-4047042.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Paso largo, rodilla trasera cerca del suelo."
+        tips:"Paso largo, rodilla trasera cerca del suelo.",
+        yt:"zancadas lunges tecnica"
     },
     {
         nombre:"Flexiones de pecho",
         musculo:"Pecho / Tríceps / Hombro frontal",
         tipo:"pecho",
+        foco:"empuje_pecho_triceps",
         lugar:"casa",
-        img:"https://images.pexels.com/photos/416778/pexels-photo-416778.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Manos debajo del pecho, cuerpo en línea recta. Rodillas al suelo si es difícil."
+        tips:"Manos debajo del pecho, cuerpo en línea recta. Rodillas al suelo si es difícil.",
+        yt:"flexiones de pecho principiantes tecnica"
     },
     {
         nombre:"Press banca con mancuernas",
         musculo:"Pecho / Tríceps",
         tipo:"pecho",
+        foco:"hipertrofia_pecho",
         lugar:"gimnasio",
-        img:"https://images.pexels.com/photos/1552103/pexels-photo-1552103.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Controla la bajada, no rebotes con el pecho."
+        tips:"Controla la bajada, no rebotes con el pecho.",
+        yt:"press banca mancuernas tecnica"
     },
     {
         nombre:"Remo inclinado con mancuerna/banda",
         musculo:"Espalda alta / Bíceps",
         tipo:"espalda",
+        foco:"tiron_espalda_biceps",
         lugar:"casa",
-        img:"https://images.pexels.com/photos/5327538/pexels-photo-5327538.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Codos pegados al cuerpo, aprieta escápulas atrás."
+        tips:"Codos pegados al cuerpo, aprieta escápulas atrás.",
+        yt:"remo con mancuerna espalda alta tecnica"
     },
     {
         nombre:"Jalón al pecho / polea",
         musculo:"Espalda dorsal",
         tipo:"espalda",
+        foco:"dorsal_anchura",
         lugar:"gimnasio",
-        img:"https://images.pexels.com/photos/7676409/pexels-photo-7676409.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Pecho arriba, tira con espalda no solo con brazos."
+        tips:"Pecho arriba, tira con espalda no solo con brazos.",
+        yt:"jalon al pecho polea tecnica"
     },
     {
         nombre:"Plancha isométrica",
         musculo:"Core / Abdomen profundo",
         tipo:"core",
+        foco:"core_estabilidad",
         lugar:"casa",
-        img:"https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Cadera ni muy alta ni muy baja. Mira al piso."
+        tips:"Cadera ni muy alta ni muy baja. Mira al piso.",
+        yt:"plancha abdominal tecnica"
     },
     {
         nombre:"Crunch / Abdominales cortos",
         musculo:"Abdomen superior",
         tipo:"core",
+        foco:"core_superior",
         lugar:"casa",
-        img:"https://images.pexels.com/photos/414029/pexels-photo-414029.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Sube controlado, no tires del cuello."
+        tips:"Sube controlado, no tires del cuello.",
+        yt:"crunch abdominal correcto"
     },
     {
         nombre:"Elevación lateral mancuernas",
         musculo:"Hombro lateral / Deltoides medio",
         tipo:"hombro",
+        foco:"deltoide_medio",
         lugar:"gimnasio",
-        img:"https://images.pexels.com/photos/7676464/pexels-photo-7676464.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Codos ligeramente flexionados, sube hasta nivel hombro."
+        tips:"Codos ligeramente flexionados, sube hasta nivel hombro.",
+        yt:"elevaciones laterales deltoides medio tecnica"
     },
     {
         nombre:"Fondos en banco / silla",
         musculo:"Tríceps",
         tipo:"brazo",
+        foco:"triceps_fondos",
         lugar:"casa",
-        img:"https://images.pexels.com/photos/4662352/pexels-photo-4662352.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Codos atrás, baja lento. Más difícil: pies más lejos."
+        tips:"Codos atrás, baja lento. Más difícil: pies más lejos.",
+        yt:"fondos en banco triceps tecnica"
     },
     {
         nombre:"Jumping jacks",
         musculo:"Cardio general",
         tipo:"cardio",
+        foco:"cardio_basico_total",
         lugar:"casa",
-        img:"https://images.pexels.com/photos/6453399/pexels-photo-6453399.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Mantén ritmo constante, aterriza suave."
+        tips:"Mantén ritmo constante, aterriza suave.",
+        yt:"jumping jacks ejercicio cardio"
     },
     {
         nombre:"Bicicleta estática / elíptica",
         musculo:"Cardio bajo impacto",
         tipo:"cardio",
+        foco:"cardio_moderado",
         lugar:"gimnasio",
-        img:"https://images.pexels.com/photos/3823039/pexels-photo-3823039.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
-        tips:"Mantén respiración constante, no bloquees rodillas."
+        tips:"Respiración constante, no bloquees rodillas.",
+        yt:"bicicleta estatica cardio bajo impacto"
     }
 ];
 
-/*
-    lógica para decidir series / repeticiones / tiempo
-*/
-function getSetsReps(nivel, objetivo, tipoEjercicio){
-    // nivel bajo = menos repeticiones, objetivo musculo = más series fuerza, etc.
-    let baseSeries = 3;
-    let baseReps = "12-15 repeticiones";
-    let baseHold = "30-45 seg";
+/* ==============================
+   LOGICA SERIES / PROGRESION
+================================= */
+function getSetsReps(nivel, objetivo, tipoEjercicio, fatiga, duracion, weekLevel){
+    // base según nivel
+    let series = 3;
+    let reps = "12-15 repeticiones";
+    let hold = "30-45 seg";
 
     if(nivel==="bajo"){
-        baseSeries = 2;
-        baseReps = "10-12 repeticiones";
-        baseHold = "20-30 seg";
+        series = 2;
+        reps = "10-12 repeticiones";
+        hold = "20-30 seg";
     } else if(nivel==="alto"){
-        baseSeries = 4;
-        baseReps = "15-20 repeticiones";
-        baseHold = "45-60 seg";
+        series = 4;
+        reps = "15-20 repeticiones";
+        hold = "45-60 seg";
     }
 
-    // si el objetivo es "musculo", más series en fuerza
-    if(objetivo==="musculo" && (tipoEjercicio==="piernas"||tipoEjercicio==="pecho"||tipoEjercicio==="espalda"||tipoEjercicio==="hombro"||tipoEjercicio==="brazo")){
-        baseSeries += 1;
+    // progresión semanal (weekLevel sube con el tiempo)
+    // cada semana sumamos +1 serie en fuerza, pero respetando fatiga
+    if(weekLevel > 1){
+        series += (weekLevel-1); // semana 2 => +1, semana 3 => +2 ...
     }
 
-    // si objetivo es "bajar grasa" o "resistencia", cardio más largo
+    // objetivo músculo -> más volumen fuerza
+    if(objetivo==="musculo" && ["piernas","pecho","espalda","hombro","brazo"].includes(tipoEjercicio)){
+        series += 1;
+    }
+
+    // objetivo bajar grasa/resistencia -> cardio más largo
     if((objetivo==="bajar grasa"||objetivo==="resistencia") && tipoEjercicio==="cardio"){
-        baseHold = "40-60 seg ritmo constante";
+        hold = "40-60 seg ritmo constante";
     }
 
-    // para core usamos hold en planchas
+    // ajuste por fatiga amarilla o roja: bajamos una serie
+    if(fatiga==="amarillo"){
+        series = Math.max(series-1,1);
+    } else if(fatiga==="rojo"){
+        series = Math.max(series-2,1);
+    }
+
+    // ajuste por duración (20 min = menos volumen total)
+    if(duracion==="20 min"){
+        series = Math.max(series-1,1);
+    } else if(duracion==="+1 hora"){
+        series += 1;
+    }
+
     if(tipoEjercicio==="core"){
-        return {
-            series: baseSeries,
-            reps: baseHold
-        };
+        return { series, reps: hold };
     }
-
-    // por defecto fuerza
-    return {
-        series: baseSeries,
-        reps: baseReps
-    };
+    return { series, reps };
 }
 
-/*
-    Construir bloque visual
-*/
-function renderExerciseItem(ejercicio, config){
+/* ==============================
+   RENDER VISUAL DE EJERCICIO
+   con checkbox ✅ y link a técnica
+   + advertencias por lesión
+================================= */
+function buildSafetyNoteForExercise(ej, lesionesText){
+    const low = (lesionesText||"").toLowerCase();
+    let notes = [];
+    if(low.includes("rodilla") && ej.tipo==="piernas"){
+        notes.push("⚠ Rodilla: no bajes más de lo cómodo, sin dolor agudo.");
+    }
+    if(low.includes("lumbar") && (ej.tipo==="piernas" || ej.tipo==="core" || ej.tipo==="espalda")){
+        notes.push("⚠ Zona lumbar: mantén espalda neutra y evita rebotes rápidos.");
+    }
+    return notes.join(" ");
+}
+
+function renderExerciseItem(ejercicio, cfg, lesionesText){
+    const safety = buildSafetyNoteForExercise(ejercicio, lesionesText);
+    const ytQuery = encodeURIComponent(ejercicio.yt || ejercicio.nombre + " tecnica ejercicio");
+    const youtubeLink = "https://www.youtube.com/results?search_query="+ytQuery;
+
+    // cada ejercicio tendrá su propio checkbox; usaremos un listener luego
     return `
     <div class="exercise-item">
+        <input type="checkbox" class="exercise-done-checkbox" />
         <div class="exercise-img">
-            <img src="${ejercicio.img}" alt="${ejercicio.nombre}" />
+            <!-- imagen de referencia -->
+            <img src="https://images.pexels.com/photos/4761780/pexels-photo-4761780.jpeg?auto=compress&cs=tinysrgb&h=200&w=200"
+                 alt="${ejercicio.nombre}" />
         </div>
         <div class="exercise-info">
-            <div class="exercise-name">${ejercicio.nombre}</div>
-            <div class="exercise-sets"><strong>${config.series} series</strong> · ${config.reps}</div>
-            <div class="exercise-extra">${ejercicio.tips}</div>
+            <div class="exercise-name">
+                <span>${ejercicio.nombre}</span>
+                <small style="font-size:.7rem;font-weight:500;color:var(--subtext);">${ejercicio.musculo}</small>
+            </div>
+            <div class="exercise-sets"><strong>${cfg.series} series</strong> · ${cfg.reps}</div>
+            <div class="exercise-extra">${ejercicio.tips}${safety?(" "+safety):""}</div>
+            <div class="exercise-link"><a href="${youtubeLink}" target="_blank">Ver técnica segura ↗</a></div>
         </div>
     </div>`;
 }
 
-function renderBlock(titulo, musculoLabel, ejerciciosHTML){
+function renderBlock(tituloIcon, musculoLabel, ejerciciosHTML){
     return `
     <div class="routine-block">
         <h3>
-            <span>${titulo}</span>
+            <span>${tituloIcon}</span>
             <span class="routine-muscle">${musculoLabel}</span>
         </h3>
         <div class="exercise-list">
@@ -808,93 +1150,234 @@ function renderBlock(titulo, musculoLabel, ejerciciosHTML){
     </div>`;
 }
 
-/*
-    Generar rutina principal
-*/
+/* ==============================
+   PLANTILLAS DE DÍAS
+   - Adaptamos qué días existen según "dias/semana"
+================================= */
+function getDayTypesForUser(diasSemana){
+    const d = parseInt(diasSemana,10);
+    if(d<=2){ // gente que entrena poco: fullbody empuje/tirón/ piernas mezclado
+        return ["A","B"]; // rotan A/B/A/B...
+    }
+    if(d<=4){
+        return ["A","B","C"]; // clásico
+    }
+    // 5+ días: agregamos día D (movilidad/recuperación activa/core)
+    return ["A","B","C","D"];
+}
+
+function pickExercisesForDay(dayType, data, ejerciciosFiltrados){
+    // helper que devuelve lista por foco
+    function pickByFoco(focos, maxCant){
+        const arr = ejerciciosFiltrados.filter(e=>focos.includes(e.foco));
+        return arr.slice(0,maxCant);
+    }
+
+    // más liviano si fatiga rojo -> priorizar core / movilidad
+    const fatigaRoja = data.fatiga==="rojo";
+
+    if(dayType==="A"){
+        return {
+            baseTitle:"Día A · Pierna fuerte + Core 🦵",
+            blocks:[
+                {
+                    titulo:"Piernas & Glúteos 🦵",
+                    label:"Fuerza inferior",
+                    focos: fatigaRoja ? ["piernas_estabilidad"] : ["piernas_gluteos","posterior_cadena"],
+                    max:2
+                },
+                {
+                    titulo:"Core Estable 🧱",
+                    label:"Abdomen / Zona lumbar",
+                    focos:["core_estabilidad","core_superior"],
+                    max:2
+                },
+                {
+                    titulo:"Activación Cardio 🫀",
+                    label:"Oxígeno / Calentamiento",
+                    focos:["cardio_basico_total","cardio_moderado"],
+                    max:1
+                }
+            ]
+        };
+    }
+
+    if(dayType==="B"){
+        return {
+            baseTitle:"Día B · Empuje (Pecho / Tríceps / Hombro) 💪",
+            blocks:[
+                {
+                    titulo:"Pecho & Tríceps 💪",
+                    label:"Empuje frontal",
+                    focos:["empuje_pecho_triceps","hipertrofia_pecho","triceps_fondos"],
+                    max:2
+                },
+                {
+                    titulo:"Hombro / Deltoide 🧊",
+                    label:"Estabilidad escapular",
+                    focos:["deltoide_medio"],
+                    max:1
+                },
+                {
+                    titulo:"Core Rápido 🧱",
+                    label:"Postura / Centro",
+                    focos:["core_superior","core_estabilidad"],
+                    max:1
+                }
+            ]
+        };
+    }
+
+    if(dayType==="C"){
+        return {
+            baseTitle:"Día C · Tirón (Espalda) + Pierna Estabilidad + Cardio 🐍",
+            blocks:[
+                {
+                    titulo:"Espalda & Bíceps 🐍",
+                    label:"Tirón / Postura",
+                    focos:["tiron_espalda_biceps","dorsal_anchura"],
+                    max:2
+                },
+                {
+                    titulo:"Pierna Control 🦵",
+                    label:"Equilibrio / Estabilidad",
+                    focos:["piernas_estabilidad","piernas_gluteos"],
+                    max:1
+                },
+                {
+                    titulo:"Cardio / Resistencia 🫀",
+                    label:"Quema grasa / Aguante",
+                    focos:["cardio_basico_total","cardio_moderado"],
+                    max:1
+                }
+            ]
+        };
+    }
+
+    // D = recuperación activa / movilidad / core suave
+    return {
+        baseTitle:"Día D · Movilidad + Core + Bajo Impacto 🌿",
+        blocks:[
+            {
+                titulo:"Movilidad Controlada 🌿",
+                label:"Articulaciones sanas",
+                focos:["piernas_estabilidad","core_estabilidad"],
+                max:2
+            },
+            {
+                titulo:"Core Suave 🧱",
+                label:"Protección lumbar",
+                focos:["core_estabilidad","core_superior"],
+                max:2
+            },
+            {
+                titulo:"Cardio Bajo Impacto 🫀",
+                label:"Flujo / Recuperación",
+                focos:["cardio_moderado"],
+                max:1
+            }
+        ]
+    };
+}
+
+/* ==============================
+   FLAVOR DEL DIA SEGÚN OBJETIVO
+================================= */
+function getCycleFlavor(baseTitle, data){
+    if(data.objetivo==="musculo" || data.preferencia==="fuerza"){
+        return baseTitle + " · Enfoque Fuerza / Hipertrofia";
+    }
+    if(data.objetivo==="bajar grasa" || data.preferencia==="hiit" || data.preferencia==="cardio"){
+        return baseTitle + " · Enfoque Cardio / Quema calórica";
+    }
+    if(data.preferencia==="movilidad" || data.intensidad==="suave"){
+        return baseTitle + " · Ritmo controlado / Cuidado articular";
+    }
+    return baseTitle + " · Balance General";
+}
+
+/* ==============================
+   WARNINGS Y CALENTAMIENTO
+================================= */
+function buildWarmupText(lesiones){
+    const low = (lesiones||"").toLowerCase();
+    let tips = [];
+    if(low.includes("rodilla")){
+        tips.push("Calentamiento rodilla: flexiones de rodilla suaves apoyado/a en pared, tobillo activo, sentadilla parcial lenta x 10.");
+    }
+    if(low.includes("lumbar")){
+        tips.push("Calentamiento lumbar: cat-cow suave en el suelo, inclinaciones pélvicas controladas, nada brusco.");
+    }
+    if(!tips.length){
+        tips.push("Calentamiento general: movilidad de cuello, hombros, cadera y rodillas por ~5 minutos con movimientos lentos y sin dolor.");
+    }
+    return tips.join(" ");
+}
+
+function shouldShowOveruseWarning(historyArr){
+    // Miramos el historial reciente (últimas 3 entradas)
+    const recent = historyArr.slice(-3);
+    const countPiernaPesada = recent.filter(h=>h.includes("Día A") || h.includes("Pierna fuerte")).length;
+    return countPiernaPesada >= 2;
+}
+
+/* ==============================
+   RENDER RUTINA COMPLETA
+================================= */
 function generarRutina(data){
-    // 1. Filtramos ejercicios según lugar principal
-    const lugarPreferido = data.lugar === "mixto" ? "casa" : data.lugar; // si mixto, prioriza casa por seguridad
+    // Guardar perfil en localStorage
+    saveProfile(data);
+
+    // cargamos index y weekLevel
+    let routineIndex = loadRoutineIndex();
+    let weekLevel = loadWeekLevel();
+
+    // día que toca según días/semana
+    const dayTypes = getDayTypesForUser(data.dias);
+    const currentDayType = dayTypes[routineIndex % dayTypes.length];
+
+    // filtramos ejercicios por lugar
+    const lugarPreferido = data.lugar === "mixto" ? "casa" : data.lugar;
     const ejerciciosFiltrados = EXERCISES.filter(ex => ex.lugar === lugarPreferido || data.lugar==="mixto");
 
-    // 2. Elegimos grupos principales:
-    // Piernas/gluteos, Pecho/Tríceps, Espalda/Bíceps, Core/Abdomen, Cardio/Calentamiento
-    const grupos = {
-        piernas: ejerciciosFiltrados.filter(e=>e.tipo==="piernas").slice(0,2),
-        pecho: ejerciciosFiltrados.filter(e=>e.tipo==="pecho").slice(0,1),
-        espalda: ejerciciosFiltrados.filter(e=>e.tipo==="espalda").slice(0,1),
-        core: ejerciciosFiltrados.filter(e=>e.tipo==="core").slice(0,2),
-        cardio: ejerciciosFiltrados.filter(e=>e.tipo==="cardio").slice(0,1),
-        brazo: ejerciciosFiltrados.filter(e=>e.tipo==="brazo").slice(0,1),
-        hombro: ejerciciosFiltrados.filter(e=>e.tipo==="hombro").slice(0,1)
-    };
+    // obtenemos layout del día actual
+    const planDelDia = pickExercisesForDay(currentDayType, data, ejerciciosFiltrados);
 
-    // 3. Armar bloques HTML dinámicamente
+    // construimos bloques (ajustamos cantidad por duración)
+    const longSession = data.duracion === "+1 hora";
+    const shortSession = data.duracion === "20 min";
+
     let blocksHTML = "";
+    planDelDia.blocks.forEach(bloque => {
+        let listaEj = [];
+        // calcular máximo dinámico según duración
+        let maxCant = bloque.max;
+        if(shortSession){ maxCant = Math.max(1, maxCant-1); }
+        if(longSession){ maxCant = maxCant+1; }
 
-    // Piernas / glúteos
-    if(grupos.piernas.length){
+        // recolectar ejercicios por foco
+        const focos = bloque.focos;
+        const pool = ejerciciosFiltrados.filter(e => focos.includes(e.foco));
+        // tomamos primeros distintos hasta maxCant
+        const chosen = pool.slice(0,maxCant);
+
         let inner = "";
-        grupos.piernas.forEach(ex=>{
-            const cfg = getSetsReps(data.nivel, data.objetivo, ex.tipo);
-            inner += renderExerciseItem(ex,cfg);
+        chosen.forEach(ex=>{
+            const cfg = getSetsReps(
+                data.nivel,
+                data.objetivo,
+                ex.tipo,
+                data.fatiga,
+                data.duracion,
+                weekLevel
+            );
+            inner += renderExerciseItem(ex,cfg,data.lesiones);
         });
-        blocksHTML += renderBlock("Piernas & Glúteos", "Fuerza inferior", inner);
-    }
 
-    // Pecho / tríceps
-    if(grupos.pecho.length){
-        let inner = "";
-        grupos.pecho.forEach(ex=>{
-            const cfg = getSetsReps(data.nivel, data.objetivo, ex.tipo);
-            inner += renderExerciseItem(ex,cfg);
-        });
-        // agregar tríceps silla si es casa o si no hay otra cosa
-        if(grupos.brazo.length){
-            grupos.brazo.forEach(ex=>{
-                const cfg = getSetsReps(data.nivel, data.objetivo, ex.tipo);
-                inner += renderExerciseItem(ex,cfg);
-            });
-        }
-        blocksHTML += renderBlock("Pecho & Tríceps", "Empuje", inner);
-    }
+        blocksHTML += renderBlock(bloque.titulo, bloque.label, inner);
+    });
 
-    // Espalda / bíceps / hombro
-    if(grupos.espalda.length){
-        let inner = "";
-        grupos.espalda.forEach(ex=>{
-            const cfg = getSetsReps(data.nivel, data.objetivo, ex.tipo);
-            inner += renderExerciseItem(ex,cfg);
-        });
-        if(grupos.hombro.length){
-            grupos.hombro.forEach(ex=>{
-                const cfg = getSetsReps(data.nivel, data.objetivo, ex.tipo);
-                inner += renderExerciseItem(ex,cfg);
-            });
-        }
-        blocksHTML += renderBlock("Espalda & Hombros", "Tirón / Estabilidad", inner);
-    }
-
-    // Core
-    if(grupos.core.length){
-        let inner = "";
-        grupos.core.forEach(ex=>{
-            const cfg = getSetsReps(data.nivel, data.objetivo, ex.tipo);
-            inner += renderExerciseItem(ex,cfg);
-        });
-        blocksHTML += renderBlock("Zona Media (Core)", "Abdomen / Lumbares", inner);
-    }
-
-    // Cardio / activación
-    if(grupos.cardio.length){
-        let inner = "";
-        grupos.cardio.forEach(ex=>{
-            const cfg = getSetsReps(data.nivel, data.objetivo, ex.tipo);
-            inner += renderExerciseItem(ex,cfg);
-        });
-        blocksHTML += renderBlock("Cardio / Activación", "Resistencia / Quema grasa", inner);
-    }
-
-    // 4. Info meta
+    // info meta arriba
     const metaParts = [];
     metaParts.push(`${data.dias} días/semana`);
     metaParts.push(`${data.duracion} por sesión`);
@@ -902,29 +1385,155 @@ function generarRutina(data){
     metaParts.push(`Nivel: ${data.nivel}`);
     const metaString = metaParts.join(" • ");
 
-    // 5. Poner todo en la página
+    // flavor del título
+    const flavoredTitle = getCycleFlavor(planDelDia.baseTitle, data);
+
+    // fatiga label
+    let fatigaText = "💚 Fresco";
+    let fatigaClass = "fatigue-green";
+    if(data.fatiga==="amarillo"){ fatigaText = "🟡 Cansado"; fatigaClass="fatigue-yellow"; }
+    if(data.fatiga==="rojo"){ fatigaText = "🔴 Muy cargado"; fatigaClass="fatigue-red"; }
+
+    const fatigaView = document.getElementById("fatigaView");
+    fatigaView.textContent = "Estado: " + fatigaText;
+    fatigaView.className = "fatigue-label " + fatigaClass;
+
+    // aplicar en DOM
     document.getElementById("chipLugar").textContent = data.lugar.toUpperCase();
     document.getElementById("routineMeta").textContent = metaString;
     document.getElementById("routineBlocks").innerHTML = blocksHTML;
+    document.getElementById("cycleLabel").textContent = flavoredTitle;
 
-    // 6. Advertencia si hay lesiones o condiciones
-    const showAlerta =
+    // mostrar calentamiento personalizado
+    const warmupMsg = buildWarmupText(data.lesiones);
+    const warmupBox = document.getElementById("warmupBox");
+    warmupBox.textContent = "Calentamiento recomendado: " + warmupMsg;
+    warmupBox.style.display = "block";
+
+    // advertencias lesiones
+    const showAlerta = (
         (data.lesiones && data.lesiones.trim().toLowerCase() !== "ninguna") ||
-        (data.condicion && data.condicion.trim().toLowerCase() !== "ninguna");
+        (data.condicion && data.condicion.trim().toLowerCase() !== "ninguna")
+    );
     document.getElementById("alertaLesion").style.display = showAlerta ? "block" : "none";
 
-    // mostrar sección rutina
-    document.getElementById("routineSection").style.display = "block";
+    // historial y sobrecarga
+    const nowStr = new Date().toLocaleString();
+    const histEntry = `${nowStr} · ${flavoredTitle}`;
+    const histArr = loadHistory();
+    histArr.push(histEntry);
+    saveHistory(histArr);
+    renderHistoryList(histArr);
 
-    // scroll suave hacia la rutina
+    const overuse = shouldShowOveruseWarning(histArr);
+    document.getElementById("sobrecargaWarning").style.display = overuse ? "block" : "none";
+
+    // mostrar secciones
+    document.getElementById("routineSection").style.display = "block";
+    document.getElementById("historySection").style.display = "block";
+
+    // scroll suave a rutina
     document.getElementById("routineSection").scrollIntoView({behavior:"smooth"});
+
+    // avanzar el índice para próxima vez
+    routineIndex = (routineIndex + 1) % dayTypes.length;
+    saveRoutineIndex(routineIndex);
+
+    // progresión semanal básica:
+    // cada 5 rutinas generadas, subimos weekLevel (simula pasar de semana)
+    if(histArr.length % 5 === 0){
+        saveWeekLevel( loadWeekLevel() + 1 );
+    }
+
+    // ahora que están en DOM los ejercicios, conectamos los checkboxes
+    attachCheckboxHandlers();
 }
 
-/*
-    Capturar datos del formulario y llamar a generarRutina()
-*/
-document.getElementById("generarBtn").addEventListener("click", ()=>{
-    const data = {
+/* ==============================
+   CHECKBOX "HECHO ✅"
+================================= */
+function attachCheckboxHandlers(){
+    const items = document.querySelectorAll(".exercise-item");
+    items.forEach(item=>{
+        const cb = item.querySelector(".exercise-done-checkbox");
+        cb.addEventListener("change",()=>{
+            if(cb.checked){
+                item.classList.add("done");
+            }else{
+                item.classList.remove("done");
+            }
+        });
+    });
+}
+
+/* ==============================
+   HISTORIAL
+================================= */
+function renderHistoryList(histArr){
+    const wrap = document.getElementById("historyList");
+    wrap.innerHTML = "";
+    // mostrar del más reciente al más antiguo
+    const reversed = [...histArr].reverse();
+    reversed.forEach(h=>{
+        const div = document.createElement("div");
+        div.className="history-item";
+        div.textContent = h;
+        wrap.appendChild(div);
+    });
+}
+
+/* ==============================
+   THEME TOGGLE
+================================= */
+const themeToggleBtn = document.getElementById("themeToggle");
+function loadTheme(){
+    const saved = localStorage.getItem("rutinaThemeV1") || "light";
+    document.documentElement.setAttribute("data-theme", saved);
+    themeToggleBtn.textContent = saved==="light"?"🌙 Oscuro":"☀ Claro";
+}
+function toggleTheme(){
+    const current = document.documentElement.getAttribute("data-theme") || "light";
+    const next = current==="light"?"dark":"light";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("rutinaThemeV1", next);
+    themeToggleBtn.textContent = next==="light"?"🌙 Oscuro":"☀ Claro";
+}
+themeToggleBtn.addEventListener("click", toggleTheme);
+
+/* ==============================
+   PRINT / PDF
+================================= */
+document.getElementById("printBtn").addEventListener("click",()=>{
+    window.print();
+});
+
+/* ==============================
+   NAVBAR BOTONES
+================================= */
+document.getElementById("navShowRoutine").addEventListener("click",()=>{
+    document.getElementById("routineSection").scrollIntoView({behavior:"smooth"});
+});
+document.getElementById("navGenerateNext").addEventListener("click",()=>{
+    // Generar una nueva rutina con el perfil guardado actual sin tener que tocar el form
+    const perfilGuardado = getDataFromUIorStorage();
+    if(perfilGuardado){
+        generarRutina(perfilGuardado);
+    }else{
+        alert("Completa tu perfil primero para generar rutina.");
+    }
+});
+document.getElementById("navShowProfile").addEventListener("click",()=>{
+    document.getElementById("perfilCard").scrollIntoView({behavior:"smooth"});
+});
+document.getElementById("navShowHistory").addEventListener("click",()=>{
+    document.getElementById("historySection").scrollIntoView({behavior:"smooth"});
+});
+
+/* ==============================
+   TOMAR DATOS DEL FORM / STORAGE
+================================= */
+function getDataFromUI(){
+    return {
         genero: document.getElementById("genero").value,
         edad: document.getElementById("edad").value,
         peso: document.getElementById("peso").value,
@@ -945,19 +1554,97 @@ document.getElementById("generarBtn").addEventListener("click", ()=>{
         motivacion: document.getElementById("motivacion").value,
         intensidad: document.getElementById("intensidad").value,
         acompanamiento: document.getElementById("acompanamiento").value,
+        fatiga: document.getElementById("fatiga").value,
+        fuerzaBase: document.getElementById("fuerzaBase").value,
         plazo: document.getElementById("plazo").value,
         seguimiento: document.getElementById("seguimiento").value,
         motivacionEspecial: document.getElementById("motivacionEspecial").value
     };
+}
 
-    // validaciones mínimas
-    if(!data.genero || !data.edad || !data.peso || !data.altura || !data.objetivo || !data.nivel || !data.dias || !data.duracion || !data.horario || !data.lugar){
+// mezcla: si falta algo en UI, intento usar perfil ya guardado
+function getDataFromUIorStorage(){
+    const ui = getDataFromUI();
+    const saved = loadProfile() || {};
+    return {...saved, ...ui};
+}
+
+/* ==============================
+   AUTORELLENO AL CARGAR
+================================= */
+function fillUIFromProfile(p){
+    if(!p) return;
+    const setVal=(id,v)=>{ if(v!==undefined && v!==null && document.getElementById(id)){document.getElementById(id).value=v;} };
+    setVal("genero",p.genero);
+    setVal("edad",p.edad);
+    setVal("peso",p.peso);
+    setVal("altura",p.altura);
+    setVal("objetivo",p.objetivo);
+    setVal("lesiones",p.lesiones);
+    setVal("condicion",p.condicion);
+    setVal("tiempoSinEntrenar",p.tiempoSinEntrenar);
+    setVal("nivel",p.nivel);
+    setVal("dias",p.dias);
+    setVal("duracion",p.duracion);
+    setVal("horario",p.horario);
+    setVal("lugar",p.lugar);
+    setVal("espacio",p.espacio);
+    setVal("equipo",p.equipo);
+    setVal("preferencia",p.preferencia);
+    setVal("experiencia",p.experiencia);
+    setVal("motivacion",p.motivacion);
+    setVal("intensidad",p.intensidad);
+    setVal("acompanamiento",p.acompanamiento);
+    setVal("fatiga",p.fatiga);
+    setVal("fuerzaBase",p.fuerzaBase);
+    setVal("plazo",p.plazo);
+    setVal("seguimiento",p.seguimiento);
+    setVal("motivacionEspecial",p.motivacionEspecial);
+}
+
+/* ==============================
+   VALIDACIÓN MÍNIMA
+================================= */
+function validateData(data){
+    if(!data.genero || !data.edad || !data.peso || !data.altura ||
+       !data.objetivo || !data.nivel || !data.dias || !data.duracion ||
+       !data.horario || !data.lugar){
+        return false;
+    }
+    return true;
+}
+
+/* ==============================
+   EVENTOS PRINCIPALES
+================================= */
+document.getElementById("generarBtn").addEventListener("click",()=>{
+    const data = getDataFromUIorStorage();
+
+    if(!validateData(data)){
         alert("Por favor completa los campos obligatorios marcados (listas principales).");
         return;
     }
 
     generarRutina(data);
 });
+
+/* iniciar */
+(function init(){
+    loadTheme();
+
+    // si hay perfil guardado lo cargamos al form
+    const savedProfile = loadProfile();
+    if(savedProfile){
+        fillUIFromProfile(savedProfile);
+    }
+
+    // mostrar historial guardado si existe
+    const histArr = loadHistory();
+    if(histArr && histArr.length){
+        document.getElementById("historySection").style.display = "block";
+        renderHistoryList(histArr);
+    }
+})();
 </script>
 </body>
 </html>
